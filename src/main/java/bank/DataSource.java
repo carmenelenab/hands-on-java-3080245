@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DataSource {
-  public static Connection connect() {
+  public static Connection connect() {//represents a connection to the database
     String db_file = "jdbc:sqlite:resources/bank.db";
     Connection connection = null;
     try {
