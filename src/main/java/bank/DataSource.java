@@ -57,11 +57,17 @@ public class DataSource {
     return account;
   }
 
-  public static void main(String[] args) {
-    Customer customer = getCustomer("cpidon69@feedburner.com");
-    // System.out.println(customer.getName());
+  public static void uppdateAccountBalance(int accountId, double balance) {//update database
+    String sql = "update accounts set balance = ? where id = ?";
+    try(
+      Connection connection = connect();
+      PreparedStatement statement = connection.prepareStatement(sql);
+    ){
+      statement.setDouble(1, balance);
+      statement.setInt(2, accountId);
 
-    Account account = getAccount(customer.getAccountId());
-    System.out.println(account.getBalance());
+      statement.executeUpdate();
+    }catch (SQLException e) {
+      e.printStackTrace();    }
   }
 }

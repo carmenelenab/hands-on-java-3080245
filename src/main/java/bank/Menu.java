@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import javax.security.auth.login.LoginException;
 
+import bank.exceptions.AmountException;
+
 public class Menu {
   private Scanner scanner;
 
@@ -18,7 +20,6 @@ public class Menu {
       menu.showMenu(customer, account);
     }
 
-
     menu.scanner.close();
   }
 
@@ -32,7 +33,7 @@ public class Menu {
     Customer customer = null;
     try {
       customer = Authenticator.login(username, password);
-    } catch(LoginException e) {
+    } catch (LoginException e) {
       System.out.println("There was an error: " + e.getMessage());
     }
 
@@ -41,30 +42,56 @@ public class Menu {
 
   private void showMenu(Customer customer, Account account) {
     // System.out.println("Customer name: " + customer.getName() + "\n" +
-    //     "Account balance: " + account.getBalance());
+    // "Account balance: " + account.getBalance());
 
     int selection = 0;
 
     while (selection != 4 && customer.isAuthenticated()) {
-      System.out.println("==========================================================");
+      System.out.println("\n===================================================\n");
       System.out.println("Please select one of the following options: ");
       System.out.println("1: Deposit");
       System.out.println("2: Withdraw");
       System.out.println("3: Check Balance");
       System.out.println("4: Exit");
-      System.out.println("==========================================================");
+      System.out.println("\n===================================================\n");
 
       selection = scanner.nextInt();
+      double amount = 0;
 
       switch (selection) {
         case 1:
-        System.out.println("How much would you like to deposit?");
-        deposit();
-
-          
+          System.out.println("How much would you like to deposit?");
+          amount = scanner.nextDouble();
+          try {
+            account.deposit(amount);
+          } catch (AmountException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Please try again!");
+          }
           break;
-      
+
+        case 2:
+          System.out.println("How much would you like to withdraw ?");
+          amount = scanner.nextDouble();
+          try {
+            account.withdraw(amount);
+          } catch (AmountException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Please try again!");
+          }
+          break;
+
+        case 3:
+          System.out.println("Current balance: " + account.getBalance());
+          break;
+        
+        case 4:
+          Authenticator.logout(customer);
+          System.out.println("Thank you for banking at Globe Bank International");
+          break;
+          
         default:
+          System.out.println("Invalid option!");
           break;
       }
     }
